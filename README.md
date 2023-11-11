@@ -1,5 +1,6 @@
 # Geekathon AI Starter Template
 
+out
 [Live Demo](https://undercover-ftw-dev.xgeeks.tech/)
 
 <img width="1305" alt="ScreenShot" src="./assets/Demo_Screenshot.png">
