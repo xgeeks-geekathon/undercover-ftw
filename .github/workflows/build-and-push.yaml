@@ -1,0 +1,70 @@
+name: Build Container Image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main']
+    paths:
+      - 'src/**'
+    exclude:
+      - 'blogs/**'
+      - 'dataFeeder/**'
+  # workflow_run:
+  #   workflows: ["Save Tokens to Azure KV"]
+  #   branches: [main]
+  #   types: 
+  #     - completed
+  # pull_request:
+  #   branches: ['main']
+
+jobs:
+  # ------------------------------------------ job 1
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    outputs:
+      newtag:  ${{ steps.export_tag.outputs.sha }}
+      shorttag:  ${{ steps.export_tag.outputs.short }}
+
+    steps:
+      - name: Export sha as short tag
+        id: export_tag
+        run: |
+          export "SHA=${{ github.sha }}"
+          echo $SHA
+          echo "${SHA:0:7}"
+          export "SHORT=${SHA:0:7}"
+          echo "sha=${{github.sha}}" >> $GITHUB_OUTPUT
+          echo "short=${SHORT}" >> $GITHUB_OUTPUT
+      
+      - name: Build, Tag and Push Docker Image to GHCR
+        uses: GlueOps/github-actions-build-push-containers@v0.1.3
+              
+  # ------------------------------------------ job 2
+  update-deployed-image-tag:
+    runs-on: ubuntu-latest
+    needs: build-and-publish
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          repository: xgeeks-geekathon/undercover-ftw_deployment
+          token: ${{ secrets.IDP_TOKEN }}
+
+      - name: Install Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Kustomize deployment image tag
+        env:
+          NEW_TAG: ${{ needs.build-and-publish.outputs.newtag }}
+          SHORT_TAG: ${{ needs.build-and-publish.outputs.shorttag }}
+        run: |
+          cd k8s/overlays/dev
+          echo $NEW_TAG
+          echo $SHORT_TAG
+          kustomize edit set image ghcr.io/xgeeks-geekathon/undercover-ftw:${{ env.SHORT_TAG }}
+          git config --local user.email "actions@github.com"
+          git config --local user.name "CD Action"
+          git add .
+          git commit -m "ci: update 'undercover-ftw' image tag to '${{ env.SHORT_TAG }}' "
+          git push

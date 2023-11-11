@@ -1,0 +1,31 @@
+name: Save Tokens to Azure KV
+# for infra database
+on:
+  workflow_dispatch:
+  push:
+    branches: ['main']
+    paths:
+      - '.github/workflows/save-tokens-to-kv.yaml' # run once only ?
+
+env:
+  TOKENS_JSON: ''
+
+jobs:
+  # ------------------------------------------ j1
+  generate-secret:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Save secret on Vault
+        uses: azure/CLI@v1
+        env:
+          USER: ${{ secrets.AZ_VAULT_SP_ID }}
+          PASS: ${{ secrets.AZ_VAULT_SP_PASSW }}
+          TENANT: ${{ secrets.AZ_VAULT_SP_TENANT }}
+        with:
+          inlineScript: |
+            az login --service-principal --username "${{ env.USER }}" --password "${{ env.PASS }}" --tenant "${{ env.TENANT }}" --allow-no-subscriptions
+            az keyvault secret set --name "undercover-ftw-dev-user-tokens" --vault-name "${{ secrets.AZ_VAULT_NAME }}" --value '{"OPENAI_API_KEY": "${{secrets.OPENAI_API_KEY}}", "REPLICATE_API_TOKEN": "${{secrets.REPLICATE_API_TOKEN}}", "PINECONE_API_KEY": "${{secrets.PINECONE_API_KEY}}", "PINECONE_ENVIRONMENT": "${{secrets.PINECONE_ENVIRONMENT}}", "PINECONE_INDEX": "${{secrets.PINECONE_INDEX}}" }'
+            az logout
+            az cache purge
+            az account clear

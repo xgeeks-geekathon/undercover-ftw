@@ -1,0 +1,17 @@
+{
+  "name": "undercover-ftw",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index-job.mjs",
+  "scripts": {
+    "indexer": "node src/index-job.mjs",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.3.1",
+    "@pinecone-database/pinecone": "^0.1.6",
+    "langchain": "^0.0.100"
+  }
+}

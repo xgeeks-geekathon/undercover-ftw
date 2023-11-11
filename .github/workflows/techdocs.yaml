@@ -1,0 +1,28 @@
+name: Publish TechDocs Site
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - '.github/workflows/techdocs.yaml'
+
+jobs:
+  publish-techdocs-site:
+    name: Publish TechDocs Site
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: Staffbase/backstage-techdocs-action@v0.2.0
+        with:
+          entity-name: undercover-ftw
+          entity-kind: Component #(default=Component)
+          entity-namespace: default # (default="default")
+          publisher-type: 'azureBlobStorage' #'awsS3'
+          storage-name: 'techdocs' # aws=BucketName, azure=ContainerName
+          azure-account-name: ${{ secrets.AZ_STOR_ACCOUNT_NAME }}
+          azure-account-key: ${{ secrets.AZ_STOR_ACCOUNT_KEY }}

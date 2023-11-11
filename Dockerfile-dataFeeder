@@ -1,0 +1,28 @@
+# syntax = docker/dockerfile:1
+
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=18.8.0
+FROM node:${NODE_VERSION}-slim as base
+
+# LABEL fly_launch_runtime="Next.js"
+
+# Next.js app lives here
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Throw-away build stage to reduce size of final image
+FROM base as build
+
+# Install node modules
+COPY dataFeeder/package-lock.json dataFeeder/package.json ./
+RUN npm ci 
+
+# Copy application code
+COPY dataFeeder/src ./src
+
+# Copy data files
+COPY blogs ./blogs
+
+CMD [ "npm", "run", "indexer" ]

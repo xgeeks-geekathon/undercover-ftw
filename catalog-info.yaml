@@ -1,0 +1,29 @@
+# ########################################### #
+#      This file is required for IDP
+#      -----------------------------
+#            Do NOT delete it
+# ########################################### #
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: undercover-ftw
+  description: finding the meaning of life
+  annotations:
+    backstage.io/techdocs-ref: dir:.
+    github.com/project-slug: xgeeks-geekathon/undercover-ftw
+  tags: ["service", "nextjs", "ai"]
+  links:
+    - url: https://idp.xgeeks.tech/catalog/default/template/ai-starter-template-nextjs
+      title: Source Template
+      icon: docs
+    - url: https://github.com/xgeeks-geekathon/undercover-ftw.git
+      title: Project Source Code Repository
+      icon: github
+    - url: https://undercover-ftw-dev.xgeeks.tech
+      title: Project Website
+      icon: website
+spec:
+  type: service
+  lifecycle: experimental # REQUIRED, usually = production | experimental | deprecated
+  owner: group:default/idp_geekathon
+  system: geekathon
