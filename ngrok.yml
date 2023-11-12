@@ -1,0 +1,11 @@
+version: 2
+tunnels:
+  policy_bundle:
+    proto: http
+    addr: policy_bundle:80
+    domain: policy-testing.ngrok.io
+  agent_api:
+    proto: http
+    addr: agent_api:5001
+    domain: agent-api-testing.ngrok.io
+authtoken: 2PUUUPS

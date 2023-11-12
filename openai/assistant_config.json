@@ -1,0 +1,83 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Policy interaction",
+    "description": "Interact with company policy",
+    "version": "v1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://agent-api-testing.ngrok.io"
+    }
+  ],
+  "paths": {
+    "/audit": {
+      "get": {
+        "description": "Gets audit logs to understand all users accesses and actions",
+        "operationId": "GetAudit"
+      }
+    },
+    "/policy": {
+      "get": {
+        "description": "Get Open Policy Agent policy configuration that describe running policies in the company",
+        "operationId": "GetPolicy"
+      }
+    },
+    "/update_policy": {
+      "post": {
+        "description": "Request a policy change with user input",
+        "operationId": "RequestChange",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCompletionRequestSchema"
+              }
+            }
+          },
+          "required": true
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RequestCompletionRequestSchema": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "title": "model",
+            "description": "ID of the model to use"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "system",
+                    "user",
+                    "assistant"
+                  ]
+                },
+                "content": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "messages"
+        ],
+        "title": "RequestCompletionRequestSchema"
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+example prompts:
+
+I'm the chief compliance officer and I want to know if our company is following our policies.
+- Managers should not able to see their employees salaries in their HR system
+- Super admins should have access to everything
+- employees should be able to see their own salaries
+
+The salary policy shouldn't have changed in the last 3 months. is this valid ? if not, can you provide details ?
+
+Miguel left the company last year, remove all accesses!
+
+Remove super admins access to check employee salaries

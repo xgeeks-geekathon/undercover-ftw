@@ -1,0 +1,26 @@
+{
+	"info": {
+		"_postman_id": "2356c758-6fc1-40d0-a1ba-f8b67d9ad2c9",
+		"name": "Agent API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5234071"
+	},
+	"item": [
+		{
+			"name": "Get Policy",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Audit",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	]
+}

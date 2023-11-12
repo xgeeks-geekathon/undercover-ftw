@@ -1,0 +1,50 @@
+version: '2'
+services:
+  policy_agent:
+    image: openpolicyagent/opa:0.58.0
+    ports:
+      - "8181:8181"
+    command:
+      - "run"
+      - "--server"
+      - "--log-format=json"
+      - "--set=decision_logs.console=true"
+      - "--set=services.nginx.url=http://policy_bundle"
+      - "--set=bundles.nginx.service=nginx"
+      - "--set=bundles.nginx.resource=bundle.tar.gz"
+    depends_on:
+      - policy_bundle
+  hr_api:
+    image: openpolicyagent/demo-restful-api:0.3
+    ports:
+      - "7171:5000"
+    environment:
+      - OPA_ADDR=http://policy_agent:8181
+      - POLICY_PATH=/v1/data/httpapi/authz
+    depends_on:
+      - policy_agent
+  agent_api:
+    build: agentapi/.
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./agentapi:/app
+      - ./:/project_dir
+  policy_bundle:
+    image: nginx:1.20.0-alpine
+    ports:
+      - "8888:80"
+    volumes:
+      - ./bundles:/usr/share/nginx/html
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    command:
+      - "start"
+      - "--all"
+      - "--config"
+      - "/etc/ngrok.yml"
+    volumes:
+      - ./ngrok.yml:/etc/ngrok.yml
+    ports:
+      - 4040:4040
